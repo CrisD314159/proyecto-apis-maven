@@ -6,6 +6,7 @@ import co.edu.uniquindio.apis.dtos.UserCreateDTO;
 import co.edu.uniquindio.apis.dtos.UserUpdateRequestDTO;
 import co.edu.uniquindio.apis.exceptions.UnexpectedErrorException;
 import co.edu.uniquindio.apis.services.user.UserService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -46,6 +47,7 @@ public class UserResource {
     }
 
     @POST
+    @PermitAll
     public Response Create(@Valid UserCreateDTO userCreateDTO)
     {
         try{

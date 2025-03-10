@@ -1,5 +1,6 @@
 package co.edu.uniquindio.apis.mappers.domainMappers;
 
+import co.edu.uniquindio.apis.dtos.LoginResponseDTO;
 import co.edu.uniquindio.apis.dtos.UserCreateDTO;
 import co.edu.uniquindio.apis.dtos.UserResponseDTO;
 import co.edu.uniquindio.apis.model.User;
@@ -21,4 +22,5 @@ public interface UserMapper {
 
 
     UserResponseDTO toResponseDTO(User user);
+
 }
