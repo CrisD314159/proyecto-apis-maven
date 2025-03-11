@@ -3,25 +3,37 @@ package co.edu.uniquindio.apis.resources;
 import co.edu.uniquindio.apis.dtos.ExampleCreateDTO;
 import co.edu.uniquindio.apis.dtos.ExampleResponseDTO;
 import co.edu.uniquindio.apis.services.example.ExampleService;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
 
 @Path("/examples")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@RequiredArgsConstructor
+@RequestScoped
 public class ExampleResource {
 
     @Inject
     ExampleService exampleService;
 
+    @Inject
+    JsonWebToken jwt;
+
+    @Claim(standard = Claims.email)
+    String email;
+
     @POST
+    @RolesAllowed({"Professor"})
     public Response createExample(@Valid ExampleCreateDTO exampleCreateDTO) {
         ExampleResponseDTO exampleResponseDTO = exampleService.createExample(exampleCreateDTO);
         return Response.status(Response.Status.CREATED).entity(exampleResponseDTO).build();
@@ -43,12 +55,14 @@ public class ExampleResource {
 
 
     @GET
+    @RolesAllowed({"User", "Admin", "Professor"})
     public List<ExampleResponseDTO> listExamples() {
         return exampleService.listExamples();
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({"User", "Admin", "Professor"})
     public Response getExampleById(@PathParam("id") Long id) {
         ExampleResponseDTO exampleResponseDTO = exampleService.getExampleById(id);
         if (exampleResponseDTO != null) {
@@ -60,6 +74,7 @@ public class ExampleResource {
 
     @PUT
     @Path("/{id}")
+    @RolesAllowed({"Admin", "Professor"})
     public Response updateExample(@PathParam("id") Long id, @Valid ExampleCreateDTO exampleCreateDTO) {
         ExampleResponseDTO exampleResponseDTO = exampleService.updateExample(id, exampleCreateDTO);
         if (exampleResponseDTO != null) {
@@ -71,6 +86,7 @@ public class ExampleResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed({"Admin", "Professor"})
     public Response deleteExample(@PathParam("id") Long id) {
         boolean deleted = exampleService.deleteExample(id);
         if (deleted) {
