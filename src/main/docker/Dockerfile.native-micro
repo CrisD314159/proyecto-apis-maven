@@ -7,6 +7,8 @@
 # Before building the container image run:
 #
 # ./mvnw package -Dnative
+
+#./mvnw package -Dnative -Dquarkus.native.container-build=true
 #
 # Then, build the image with:
 #

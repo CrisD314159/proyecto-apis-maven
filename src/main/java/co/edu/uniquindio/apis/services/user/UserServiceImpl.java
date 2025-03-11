@@ -3,19 +3,21 @@ package co.edu.uniquindio.apis.services.user;
 import co.edu.uniquindio.apis.dtos.*;
 import co.edu.uniquindio.apis.exceptions.EntityNotFoundException;
 import co.edu.uniquindio.apis.exceptions.ValidationException;
+import co.edu.uniquindio.apis.mappers.domainMappers.LoginMapper;
 import co.edu.uniquindio.apis.mappers.domainMappers.UserMapper;
 import co.edu.uniquindio.apis.model.User;
 import co.edu.uniquindio.apis.model.enums.Role;
 import co.edu.uniquindio.apis.model.enums.UserState;
 import co.edu.uniquindio.apis.repositories.user.UserRepository;
+import co.edu.uniquindio.apis.services.security.JWTService;
+import co.edu.uniquindio.apis.services.security.JWTServiceImpl;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -25,10 +27,17 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     @Inject
     UserMapper userMapper;
+    @Inject
+    JWTService jwtService;
+    @Inject
+    LoginMapper loginMapper;
 
 
     @Transactional
     public UserResponseDTO CreateUser(UserCreateDTO userCreateDTO) {
+
+        if(userExists(userCreateDTO.email())) throw new ValidationException("User already exists");
+
         User user = userMapper.toEntity(userCreateDTO);
         user.setCreationDate(LocalDateTime.now());
         int code = (int) (Math.random() * 9000) + 1000;
@@ -38,6 +47,13 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.ESTUDENT);
         userRepository.persist(user);
         return userMapper.toResponseDTO(user);
+    }
+
+
+    private boolean userExists(String email) {
+        boolean exists = userRepository.find("email", email).firstResult() != null;
+        System.out.println(exists);
+        return exists;
     }
 
     @Transactional
@@ -88,7 +104,17 @@ public class UserServiceImpl implements UserService {
 
 
     public LoginResponseDTO Login(LoginRequestDTO loginRequestDTO) {
-        return new LoginResponseDTO(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        User user = userRepository.find("email", loginRequestDTO.email()).firstResult();
+        if (user == null) throw  new EntityNotFoundException("Invalid email or password");
+        System.out.println(user.getFullName());
+        if(!BcryptUtil.matches(loginRequestDTO.password(), user.getPassword()))
+        {
+            System.out.println("Invalid password");
+            throw new ValidationException("Invalid email or password");
+        }
+
+        String token = jwtService.generateUserToken(user.getEmail());
+        return loginMapper.toLoginResponseDTO(token, token);
     }
 
 

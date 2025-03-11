@@ -15,7 +15,7 @@ public class Program {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
     private String title;
     private String description;
     private String content;
@@ -26,11 +26,11 @@ public class Program {
 
     private LocalDateTime creationDate;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -38,7 +38,7 @@ public class Program {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(String  title) {
         this.title = title;
     }
 
