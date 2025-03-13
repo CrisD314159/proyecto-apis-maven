@@ -11,6 +11,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  consul:
+    image: consul:1.15.4
+    ports:
+      - "8500:8500" # Interfaz web de Consul
+      - "8600:8600/udp" # DNS de Consul
+    volumes:
+      - ./config/consul/config:/etc/consul.d # Monta el directorio de configuración
+    command: agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -config-dir=/etc/con
+
   app:
     image: quarkus-example-app:latest
     build:
@@ -26,6 +35,11 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres_data:
