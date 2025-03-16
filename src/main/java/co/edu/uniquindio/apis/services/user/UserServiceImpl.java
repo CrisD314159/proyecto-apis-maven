@@ -11,6 +11,7 @@ import co.edu.uniquindio.apis.model.enums.UserState;
 import co.edu.uniquindio.apis.repositories.user.UserRepository;
 import co.edu.uniquindio.apis.services.security.JWTService;
 import co.edu.uniquindio.apis.services.security.JWTServiceImpl;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
     JWTService jwtService;
     @Inject
     LoginMapper loginMapper;
+    @Inject
+    MeterRegistry meterRegistry; // Clase que almacena todas las metricas de la aplicación
 
 
     @Transactional
@@ -46,6 +49,8 @@ public class UserServiceImpl implements UserService {
         user.setState(UserState.UNVERIFIED);
         user.setRole(Role.ESTUDENT);
         userRepository.persist(user);
+        // Adición de un contador que acumula la cantidad de veces que se crea un usuario
+        meterRegistry.counter("apis.user.created").increment();
         return userMapper.toResponseDTO(user);
     }
 
