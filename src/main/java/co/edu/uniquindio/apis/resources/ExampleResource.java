@@ -16,12 +16,15 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/examples")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
 public class ExampleResource {
+
+    private static final Logger LOG = Logger.getLogger(ExampleResource.class.getName());
 
     @Inject
     ExampleService exampleService;
@@ -36,6 +39,7 @@ public class ExampleResource {
     @RolesAllowed({"Professor"})
     public Response createExample(@Valid ExampleCreateDTO exampleCreateDTO) {
         ExampleResponseDTO exampleResponseDTO = exampleService.createExample(exampleCreateDTO);
+        LOG.info("Nuevo ejemplo registrado con exito");
         return Response.status(Response.Status.CREATED).entity(exampleResponseDTO).build();
     }
 
@@ -78,6 +82,7 @@ public class ExampleResource {
     public Response updateExample(@PathParam("id") Long id, @Valid ExampleCreateDTO exampleCreateDTO) {
         ExampleResponseDTO exampleResponseDTO = exampleService.updateExample(id, exampleCreateDTO);
         if (exampleResponseDTO != null) {
+            LOG.info("Nuevo ejemplo actualizado con exito");
             return Response.ok(exampleResponseDTO).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -90,6 +95,7 @@ public class ExampleResource {
     public Response deleteExample(@PathParam("id") Long id) {
         boolean deleted = exampleService.deleteExample(id);
         if (deleted) {
+            LOG.info("Nuevo ejemplo eliminado con exito");
             return Response.noContent().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

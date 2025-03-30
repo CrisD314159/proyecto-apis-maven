@@ -18,12 +18,15 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/program")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
 public class ProgramResource {
+
+    private static final Logger LOG = Logger.getLogger(ProgramResource.class.getName());
 
     @Inject
      ProgramService programService;
@@ -38,6 +41,7 @@ public class ProgramResource {
     public Response createProgram(ProgramCreateDTO programCreateDTO){
         try{
             var response = programService.createProgram(programCreateDTO);
+            LOG.info("Nuevo programa registrado con exito");
             return Response.status(Response.Status.CREATED).entity(response).build();
         } catch (Exception e){
             throw new UnexpectedErrorException("Unable to get program");
@@ -88,6 +92,7 @@ public class ProgramResource {
     public Response updateProgram(ProgramUpdateRequestDTO programUpdateRequestDTO){
         try{
             var response = programService.updateProgram(programUpdateRequestDTO);
+            LOG.info("Nuevo programa actualizado con exito");
             return Response.status(Response.Status.OK).entity(response).build();
         } catch (Exception e){
             throw new UnexpectedErrorException("Unable to get program");
@@ -101,6 +106,7 @@ public class ProgramResource {
     public Response deleteProgram(@PathParam("id")String id){
         try{
             var response = programService.deleteProgram(id);
+            LOG.info("Nuevo programa eliminado con exito");
             return Response.status(Response.Status.OK).entity(response).build();
         } catch (Exception e){
             throw new UnexpectedErrorException("Unable to get program");
