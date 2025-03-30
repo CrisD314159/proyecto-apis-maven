@@ -1,4 +1,10 @@
 package co.edu.uniquindio.apis.dtos;
 
-public class CommentCreateDTO {
+public record CommentCreateDTO
+        (
+                Long authorId,
+                String content,
+                Long programId
+        ){
+
 }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
     private String fullName;
     private String email;

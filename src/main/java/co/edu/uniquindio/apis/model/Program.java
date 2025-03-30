@@ -14,12 +14,12 @@ import java.util.List;
 public class Program {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
     private String title;
     private String description;
     private String content;
-    private String creatorId;
+    private Long creatorId;
 
     @OneToMany(mappedBy = "program")
     private List<Comment> comments;
@@ -58,11 +58,11 @@ public class Program {
         this.content = content;
     }
 
-    public String getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(String creatorId) {
+    public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
     }
 
