@@ -21,11 +21,15 @@ import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import java.util.logging.Logger;
+
 @Path("/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
 public class UserResource {
+
+    private static final Logger LOG = Logger.getLogger(UserResource.class.getName());
 
     @Inject
     UserService service;
@@ -68,6 +72,7 @@ public class UserResource {
     {
         try{
             var user = service.CreateUser(userCreateDTO);
+            LOG.info("Nuevo usuario registrado con exito");
             return Response.ok().entity(user).build();
         }catch (Exception e){
             throw new UnexpectedErrorException("Unable to create user");
@@ -81,6 +86,7 @@ public class UserResource {
     {
         try{
             var user = service.UpdateUser(userUpdateDTO);
+            LOG.info("Nuevo usuario actualizado con exito");
             return Response.ok().entity(user).build();
         }catch (Exception e){
             throw new UnexpectedErrorException("Unable to update user");
@@ -95,6 +101,7 @@ public class UserResource {
     {
         try{
             var user = service.DeleteUser(id);
+            LOG.info("Nuevo usuario eliminado con exito");
             return Response.ok().entity(user).build();
         }catch (Exception e){
             throw new UnexpectedErrorException("Unable to delete user");
