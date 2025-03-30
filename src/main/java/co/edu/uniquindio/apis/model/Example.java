@@ -11,11 +11,10 @@ public class Example {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
     private String description;
     private String content;
-    private String creatorId;
+    private Long creatorId;
 
     @ElementCollection
     private List<String> tags;
@@ -56,11 +55,11 @@ public class Example {
         this.content = content;
     }
 
-    public String getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(String creatorId) {
+    public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
     }
 
