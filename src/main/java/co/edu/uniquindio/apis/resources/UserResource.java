@@ -72,7 +72,7 @@ public class UserResource {
     {
         try{
             var user = service.CreateUser(userCreateDTO);
-            LOG.info("Nuevo usuario registrado con exito");
+            LOG.info("User created");
             return Response.ok().entity(user).build();
         }catch (Exception e){
             throw new UnexpectedErrorException("Unable to create user");
