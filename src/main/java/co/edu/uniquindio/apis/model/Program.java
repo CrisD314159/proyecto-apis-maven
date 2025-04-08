@@ -19,7 +19,7 @@ public class Program {
     private String title;
     private String description;
     private String content;
-    private String creatorId;
+    private Long creatorId;
 
     @OneToMany(mappedBy = "program")
     private List<Comment> comments;
@@ -58,11 +58,11 @@ public class Program {
         this.content = content;
     }
 
-    public String getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(String creatorId) {
+    public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
     }
 
