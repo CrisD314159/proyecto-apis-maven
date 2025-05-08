@@ -3,6 +3,7 @@ package co.edu.uniquindio.apis.resources;
 import co.edu.uniquindio.apis.dtos.ExampleCreateDTO;
 import co.edu.uniquindio.apis.dtos.ExampleResponseDTO;
 import co.edu.uniquindio.apis.services.example.ExampleService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -36,7 +37,7 @@ public class ExampleResource {
     String email;
 
     @POST
-    @RolesAllowed({"Professor"})
+    @PermitAll
     public Response createExample(@Valid ExampleCreateDTO exampleCreateDTO) {
         ExampleResponseDTO exampleResponseDTO = exampleService.createExample(exampleCreateDTO);
         LOG.info("Nuevo ejemplo registrado con exito");
@@ -59,14 +60,14 @@ public class ExampleResource {
 
 
     @GET
-    @RolesAllowed({"User", "Admin", "Professor"})
+    @PermitAll
     public List<ExampleResponseDTO> listExamples() {
         return exampleService.listExamples();
     }
 
     @GET
     @Path("/{id}")
-    @RolesAllowed({"User", "Admin", "Professor"})
+    @PermitAll
     public Response getExampleById(@PathParam("id") Long id) {
         ExampleResponseDTO exampleResponseDTO = exampleService.getExampleById(id);
         if (exampleResponseDTO != null) {
@@ -78,7 +79,7 @@ public class ExampleResource {
 
     @PUT
     @Path("/{id}")
-    @RolesAllowed({"Admin", "Professor"})
+    @PermitAll
     public Response updateExample(@PathParam("id") Long id, @Valid ExampleCreateDTO exampleCreateDTO) {
         ExampleResponseDTO exampleResponseDTO = exampleService.updateExample(id, exampleCreateDTO);
         if (exampleResponseDTO != null) {
@@ -91,7 +92,7 @@ public class ExampleResource {
 
     @DELETE
     @Path("/{id}")
-    @RolesAllowed({"Admin", "Professor"})
+    @PermitAll
     public Response deleteExample(@PathParam("id") Long id) {
         boolean deleted = exampleService.deleteExample(id);
         if (deleted) {

@@ -21,7 +21,7 @@ public record ProgramCreateDTO(
         String content,
 
         @NotNull(message = "Creator ID is required")
-        String creatorId,
+        Long creatorId,
 
         List<Comment> comments
 ) {}

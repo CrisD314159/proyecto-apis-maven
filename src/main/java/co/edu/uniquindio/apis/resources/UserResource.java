@@ -42,7 +42,7 @@ public class UserResource {
 
     @GET
     @Path("/{id}")
-    @RolesAllowed({ "User", "Admin" , "Professor"})
+    @PermitAll
     public Response GetSingle(@PathParam("id") Long id) {
         try{
             var user = service.GetUserById(id);
@@ -54,7 +54,7 @@ public class UserResource {
     }
 
     @GET
-    @RolesAllowed({ "User", "Admin", "Professor" })
+    @PermitAll
     public Response GetAll(@QueryParam("offset") int offset, @QueryParam("limit") int limit, @Context SecurityContext cxt) {
         System.out.println(email);
         try{
@@ -81,7 +81,7 @@ public class UserResource {
     }
 
     @PUT
-    @RolesAllowed({"User", "Professor"})
+    @PermitAll
     public Response UpdateUser(@Valid UserUpdateRequestDTO userUpdateDTO)
     {
         try{
@@ -96,7 +96,7 @@ public class UserResource {
 
     @DELETE
     @Path("/{id}")
-    @RolesAllowed({"User", "Professor"})
+    @PermitAll
     public Response DeleteUser(@PathParam("id") Long id)
     {
         try{
@@ -104,6 +104,7 @@ public class UserResource {
             LOG.info("Nuevo usuario eliminado con exito");
             return Response.ok().entity(user).build();
         }catch (Exception e){
+            System.out.println(e.getMessage());
             throw new UnexpectedErrorException("Unable to delete user");
         }
 

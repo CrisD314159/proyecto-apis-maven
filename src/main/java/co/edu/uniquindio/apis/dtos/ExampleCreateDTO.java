@@ -19,7 +19,7 @@ public record ExampleCreateDTO(
         String content,
 
         @NotNull(message = "Creator ID is required")
-        String creatorId,
+        Long creatorId,
 
         List<String> tags,
 

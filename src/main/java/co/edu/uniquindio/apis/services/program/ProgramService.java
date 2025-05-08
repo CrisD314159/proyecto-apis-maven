@@ -12,11 +12,11 @@ public interface ProgramService {
 
     List<ProgramResponseDTO> getAllPrograms();
 
-    List<CommentDTO> getAllComments(String id, int offset, int limit);
+    List<CommentDTO> getAllComments(Long id, int offset, int limit);
 
-    ProgramResponseDTO getById(String id);
+    ProgramResponseDTO getById(Long id);
 
     ProgramResponseDTO updateProgram(ProgramUpdateRequestDTO programUpdateRequestDTO);
 
-    boolean deleteProgram(String id);
+    boolean deleteProgram(Long id);
 }

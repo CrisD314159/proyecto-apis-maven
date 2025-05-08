@@ -6,8 +6,8 @@ import org.hibernate.validator.constraints.UUID;
 
 public record ProgramUpdateRequestDTO(
 
-        @UUID
-        String id,
+
+        Long id,
 
         @NotBlank
         @Size(max = 50, message = "tittle cannot have more than 50 characteres")

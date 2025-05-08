@@ -1,11 +1,13 @@
 package co.edu.uniquindio.apis.resources;
 
 import co.edu.uniquindio.apis.dtos.CommentCreateDTO;
+import co.edu.uniquindio.apis.dtos.CommentResponseDTO;
 import co.edu.uniquindio.apis.dtos.CommentUpdateDTO;
 import co.edu.uniquindio.apis.exceptions.UnexpectedErrorException;
 import co.edu.uniquindio.apis.model.Comment;
 import co.edu.uniquindio.apis.model.enums.CommentState;
 import co.edu.uniquindio.apis.services.comment.CommentService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -36,7 +38,7 @@ public class CommentResource {
     String email;
 
     @POST
-    @RolesAllowed({"Professor"})
+    @PermitAll
     public Response createComment(CommentCreateDTO comment) {
         try{
             commentService.CreateComment(comment);
@@ -49,16 +51,18 @@ public class CommentResource {
 
     @GET
     @Path("/{id}")
+    @PermitAll
     public Response getCommentById(@PathParam("id") Long id) {
         try{
-            commentService.GetComment(id);
-            return  Response.status(Response.Status.OK).build();
+            CommentResponseDTO response = commentService.GetComment(id);
+            return  Response.ok(response).build();
         }catch (Exception e){
             throw new UnexpectedErrorException(e.getMessage());
         }
     }
 
     @PUT
+    @PermitAll
     public Response updateComment(CommentUpdateDTO comment) {
         try{
             commentService.UpdateComment(comment);
@@ -71,6 +75,7 @@ public class CommentResource {
 
     @DELETE
     @Path("/{id}")
+    @PermitAll
     public Response deleteComment(@PathParam("id") Long id) {
         try {
             commentService.DeleteComment(id);
@@ -82,7 +87,8 @@ public class CommentResource {
     }
 
     @PATCH
-    @Path("/resolve/{id}")
+    @Path("/{id}")
+    @PermitAll
     public Response resolveComment(@PathParam("id") Long id) {
         try {
             commentService.ResolveComment(id);

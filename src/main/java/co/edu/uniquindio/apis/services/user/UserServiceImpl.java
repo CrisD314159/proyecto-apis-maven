@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Inject
     MeterRegistry meterRegistry; // Clase que almacena todas las metricas de la aplicación
 
-
+    @Override
     @Transactional
     public UserResponseDTO CreateUser(UserCreateDTO userCreateDTO) {
 
@@ -61,6 +61,7 @@ public class UserServiceImpl implements UserService {
         return exists;
     }
 
+    @Override
     @Transactional
     public List<UserResponseDTO> GetAllUsers(int offset, int limit) {
         var users = userRepository.findAll().range(offset, offset + limit);
@@ -79,22 +80,21 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponseDTO(user);
     }
 
-
+    @Override
+    @Transactional
     public boolean UpdateUser(UserUpdateRequestDTO userUpdateRequestDTO) {
         User user = userRepository.findById(userUpdateRequestDTO.Id());
-
-        if (user == null) {
-            throw new EntityNotFoundException("User not found");
-        }
+        System.out.println(user.getEmail());
 
         user.setFullName(userUpdateRequestDTO.fullName());
-
         userRepository.persist(user);
 
         return true;
+
     }
 
-
+    @Override
+    @Transactional
     public boolean DeleteUser(Long id) {
         User user = userRepository.findById(id);
 

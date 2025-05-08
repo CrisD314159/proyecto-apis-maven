@@ -1,5 +1,6 @@
 package co.edu.uniquindio.apis.mappers.domainMappers;
 
+import co.edu.uniquindio.apis.dtos.CommentCreateDTO;
 import co.edu.uniquindio.apis.dtos.CommentDTO;
 import co.edu.uniquindio.apis.model.Comment;
 import org.mapstruct.Mapper;
@@ -10,8 +11,9 @@ import org.mapstruct.MappingConstants;
 public interface CommentMapper {
 
     @Mapping(target = "id", ignore = true)
-    Comment parseOf(CommentDTO commentDTO);
+    @Mapping(target = "program", ignore = true)
+    Comment toEntity(CommentCreateDTO commentDTO);
 
-    CommentDTO toDTO(Comment comment);
+    CommentDTO toResponseDTO(Comment comment);
 
 }

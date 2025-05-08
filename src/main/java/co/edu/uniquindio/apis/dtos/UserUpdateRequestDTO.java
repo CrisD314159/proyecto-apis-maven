@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.UUID;
 
 public record UserUpdateRequestDTO(
-        @UUID
+
         Long Id,
 
         @NotBlank(message = "El campo es requerido")

@@ -43,15 +43,15 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     @Override
-    public List<CommentDTO> getAllComments(String id, int offset, int limit) {
+    public List<CommentDTO> getAllComments(Long id, int offset, int limit) {
         return List.of(); //TODO Revisar si se debe crear repository de comentario
     }
 
 
     @Override
     @Transactional
-    public ProgramResponseDTO getById(String id) {
-        Program program = programRepository.find("id",id).firstResult();
+    public ProgramResponseDTO getById(Long id) {
+        Program program = programRepository.findById(id);
         if (program == null) {
             throw new EntityNotFoundException("Programa no encontrado");
         }
@@ -61,24 +61,24 @@ public class ProgramServiceImpl implements ProgramService {
     @Override
     @Transactional
     public ProgramResponseDTO updateProgram(ProgramUpdateRequestDTO programUpdateRequestDTO) {
-        var program = programRepository.find("id",programUpdateRequestDTO.id()).firstResult();
+        Program program = programRepository.findById(programUpdateRequestDTO.id());
 
-        if (program == null) {
-            throw new EntityNotFoundException("Programa no encontrado");
+        if (program != null) {
+            program.setTitle(programUpdateRequestDTO.title());
+            program.setDescription(programUpdateRequestDTO.description());
+            program.setContent(programUpdateRequestDTO.content());
+
+            programRepository.persist(program);
+
+            return programMapper.toDTO(program);
         }
 
-        program.setTitle(programUpdateRequestDTO.title());
-        program.setDescription(programUpdateRequestDTO.description());
-        program.setContent(programUpdateRequestDTO.content());
-
-        programRepository.persist(program);
-
-        return programMapper.toDTO(program);
+        return null;
     }
 
     @Override
     @Transactional
-    public boolean deleteProgram(String id) {
+    public boolean deleteProgram(Long id) {
         var program = programRepository.find("id",id).firstResult();
 
         if (program == null) {
