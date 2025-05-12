@@ -52,7 +52,7 @@ services:
       - elk
 
   jenkins:
-    image: jenkins/jenkins:lts
+    image: jenkins/jenkins:lts-jdk21
     container_name: jenkins
     privileged: true
     user: root

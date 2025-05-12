@@ -176,11 +176,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.quarkiverse.reactivemessaging.nats-jetstream</groupId>
-            <artifactId>quarkus-messaging-nats-jetstream</artifactId>
-            <version>3.20.1</version>
-        </dependency>
-        <dependency>
             <groupId>com.resend</groupId>
             <artifactId>resend-java</artifactId>
             <version>3.1.0</version>

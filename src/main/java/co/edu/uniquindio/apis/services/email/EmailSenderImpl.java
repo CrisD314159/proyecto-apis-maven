@@ -11,7 +11,6 @@ import io.vertx.core.impl.logging.LoggerFactory;
 import jakarta.ws.rs.core.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.smallrye.reactive.messaging.MutinyEmitter;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,16 +18,12 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
+
 
 @ApplicationScoped
 public class EmailSenderImpl implements EmailSenderInteface{
     private static final Logger log = LoggerFactory.getLogger(EmailSenderImpl.class);
 
-    @Inject
-    @Channel("email-out") // Canal de salida para emails
-    MutinyEmitter<String> emailEmitter;
 
     @Inject
     ObjectMapper objectMapper; // Inyecta Jackson ObjectMapper
