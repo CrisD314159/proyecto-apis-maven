@@ -75,6 +75,7 @@ public class ExampleResource {
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+
     }
 
     @PUT

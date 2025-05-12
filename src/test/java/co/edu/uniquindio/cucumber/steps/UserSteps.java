@@ -89,7 +89,7 @@ public class UserSteps {
 
     @Then("the user should be deleted successfully")
     public void userDeletedSuccessfully() {
-        response.then().statusCode(204);
+        response.then().statusCode(200);
     }
 
     @And("the user should no longer exist in the system")

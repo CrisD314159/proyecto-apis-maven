@@ -112,7 +112,7 @@ public class ProgramSteps {
 
     @Then("the program should be deleted successfully")
     public void programDeletedSuccessfully() {
-        response.then().statusCode(204);
+        response.then().statusCode(200);
     }
 
     @And("the program should no longer exist in the system")

@@ -9,6 +9,7 @@ import co.edu.uniquindio.apis.model.User;
 import co.edu.uniquindio.apis.model.enums.Role;
 import co.edu.uniquindio.apis.model.enums.UserState;
 import co.edu.uniquindio.apis.repositories.user.UserRepository;
+import co.edu.uniquindio.apis.services.email.EmailSenderInteface;
 import co.edu.uniquindio.apis.services.security.JWTService;
 import co.edu.uniquindio.apis.services.security.JWTServiceImpl;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -34,6 +35,8 @@ public class UserServiceImpl implements UserService {
     LoginMapper loginMapper;
     @Inject
     MeterRegistry meterRegistry; // Clase que almacena todas las metricas de la aplicación
+    @Inject
+    EmailSenderInteface emailSender;
 
     @Override
     @Transactional
@@ -51,6 +54,11 @@ public class UserServiceImpl implements UserService {
         userRepository.persist(user);
         // Adición de un contador que acumula la cantidad de veces que se crea un usuario
         meterRegistry.counter("apis.user.created").increment();
+        boolean emailResponse = emailSender.sendEmail(new EmailDTO(userCreateDTO.email(), "Welcome test", "Heeeellllooo"));
+        if (!emailResponse) {
+            System.out.println("Email not sent");
+            return null;
+        }
         return userMapper.toResponseDTO(user);
     }
 

@@ -51,6 +51,22 @@ services:
     networks:
       - elk
 
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    privileged: true
+    user: root
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    networks:
+      - jenkins-network
+
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.0
     environment:
@@ -79,4 +95,6 @@ volumes:
 
 networks:
   elk:
+    driver: bridge
+  jenkins-network:
     driver: bridge

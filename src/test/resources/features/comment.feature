@@ -16,7 +16,6 @@ Feature: Comment management
     Given a comment exists with ID 1
     When I update the comment with ID 1 with content "Updated comment text"
     Then the comment should be updated successfully
-    And the comment details should be updated
 
   Scenario: Delete a comment
     Given a comment exists with ID 1

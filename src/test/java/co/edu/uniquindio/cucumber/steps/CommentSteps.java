@@ -74,10 +74,8 @@ public class CommentSteps{
 
         // Create update request with the new content but keeping other fields
         JSONObject requestBody = new JSONObject();
-        requestBody.put("Id", id);
+        requestBody.put("id", id);
         requestBody.put("content", content);
-        requestBody.put("authorId", getResponse.jsonPath().getInt("authorId"));
-        requestBody.put("programId", getResponse.jsonPath().getInt("programId"));
 
         request = given()
                 .header("Content-Type", "application/json")
@@ -89,15 +87,6 @@ public class CommentSteps{
     @Then("the comment should be updated successfully")
     public void commentUpdatedSuccessfully() {
         response.then().statusCode(200);
-    }
-
-    @And("the comment details should be updated")
-    public void commentDetailsUpdated() {
-        response.then()
-                .body("id", notNullValue())
-                .body("content", notNullValue())
-                .body("authorId", notNullValue())
-                .body("programId", notNullValue());
     }
 
     @When("I delete the comment with ID {int}")

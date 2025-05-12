@@ -65,6 +65,7 @@ public class CommentResource {
     @PermitAll
     public Response updateComment(CommentUpdateDTO comment) {
         try{
+
             commentService.UpdateComment(comment);
             LOG.info("Comment updated");
             return Response.status(Response.Status.OK).build();
