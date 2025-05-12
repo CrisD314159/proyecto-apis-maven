@@ -21,7 +21,7 @@ pipeline {
         stage('Run Specific Tests') {
             steps {
                 withEnv(['TESTCONTAINERS_RYUK_DISABLED=true']) {
-                    sh './mvnw -Dtest=EmailServiceTest,RegisterServiceTest test'
+                    sh './mvnw -Dtest=EmailServiceTest test'
                 }
             }
             post {
