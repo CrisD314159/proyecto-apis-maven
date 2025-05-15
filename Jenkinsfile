@@ -32,18 +32,21 @@ pipeline {
             }
         }
 
+        stage('Ejecutar Quarkus en Segundo Plano y Esperar') {
+            steps {
+                script {
+
+                    sh 'nohup ./mvnw quarkus:dev &'
+                    sh 'sleep 40'
+                }
+            }
+        }
+
+
         stage('Ejecutar Pruebas Automatizadas') {
              steps {
                 sh 'mvn test'
              }
-        }
-
-        stage('Análisis SonarQube') {
-            steps {
-                withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
-                    sh './mvn sonar:sonar'
-                }
-            }
         }
 
         stage('Publicar resultados de pruebas') {

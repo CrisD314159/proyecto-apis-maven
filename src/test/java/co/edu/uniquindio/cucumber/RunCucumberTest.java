@@ -10,5 +10,5 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 @SelectClasspathResource("features") // Carpeta base de los .feature
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "co.edu.uniquindio.cucumber.steps")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json")
-public class RunCucumberIT {
+public class RunCucumberTest {
 }
