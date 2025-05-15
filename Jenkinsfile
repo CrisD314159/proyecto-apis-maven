@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER = 'SonarQube'
         SONAR_TOKEN = credentials('sonarqube-token')
     }
 
@@ -19,9 +18,8 @@ pipeline {
 
         stage('Análisis de Calidad con SonarQube') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh './mvnw sonar:sonar -Dsonar.projectKey=quarkus-app -Dsonar.login=$SONAR_TOKEN'
-                }
+                sh 'chmod +x mvnw'
+                sh './mvnw sonar:sonar -Dsonar.projectKey=quarkus-app -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=$SONAR_TOKEN'
             }
         }
 
