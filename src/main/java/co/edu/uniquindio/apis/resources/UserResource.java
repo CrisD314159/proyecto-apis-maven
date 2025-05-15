@@ -89,6 +89,7 @@ public class UserResource {
             LOG.info("Nuevo usuario actualizado con exito");
             return Response.ok().entity(user).build();
         }catch (Exception e){
+            System.out.println(e.getMessage());
             throw new UnexpectedErrorException("Unable to update user");
         }
 

@@ -1,43 +1,49 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.8.5'
+    environment {
+        SONARQUBE_SERVER = 'SonarQube'
+        SONAR_TOKEN = credentials('sonarqube-token')
     }
+
+    tools {
+            maven 'Maven 3.8.5' // Asegúrate que este nombre coincida con el configurado en Jenkins
+    }
+
 
     stages {
-        stage('Checkout') {
+        stage('Clonar repositorio') {
             steps {
-                checkout scm
+                git 'https://github.com/usuario/tu-repo.git'
             }
         }
 
-        stage('Build') {
+        stage('Compilar y probar') {
             steps {
-                sh './mvnw clean package -DskipTests=true'
+                sh './mvnw clean verify'
             }
         }
 
-        stage('Run Specific Tests') {
+        stage('Análisis SonarQube') {
             steps {
-                withEnv(['TESTCONTAINERS_RYUK_DISABLED=true']) {
-                    sh './mvnw -Dtest=EmailServiceTest,UserServiceTests test'
-                }
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
+                withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
+                    sh './mvn sonar:sonar'
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Demo completed successfully!'
+        stage('Publicar resultados de pruebas') {
+            steps {
+                junit '**/target/surefire-reports/*.xml'
+            }
         }
-        failure {
-            echo 'Demo failed - check the test results!'
+
+        stage('Esperar calidad de Sonar (opcional)') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
         }
     }
 }

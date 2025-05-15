@@ -69,6 +69,18 @@ services:
     networks:
       - jenkins-network
 
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    ports:
+      - "9000:9000"
+    networks:
+      - jenkins-network
+
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.0
     environment:
@@ -94,9 +106,9 @@ services:
 
 volumes:
   postgres_data:
+  jenkins_home:
 
 networks:
   elk:
     driver: bridge
   jenkins-network:
-    driver: bridge

@@ -54,11 +54,6 @@ public class UserServiceImpl implements UserService {
         userRepository.persist(user);
         // Adición de un contador que acumula la cantidad de veces que se crea un usuario
         meterRegistry.counter("apis.user.created").increment();
-        boolean emailResponse = emailSender.sendEmail(new EmailDTO(userCreateDTO.email(), "Welcome test", "Heeeellllooo"));
-        if (!emailResponse) {
-            System.out.println("Email not sent");
-            return null;
-        }
         return userMapper.toResponseDTO(user);
     }
 
@@ -91,7 +86,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean UpdateUser(UserUpdateRequestDTO userUpdateRequestDTO) {
-        User user = userRepository.findById(userUpdateRequestDTO.Id());
+        System.out.println(userUpdateRequestDTO.id());
+        User user = userRepository.findById(userUpdateRequestDTO.id());
         System.out.println(user.getEmail());
 
         user.setFullName(userUpdateRequestDTO.fullName());

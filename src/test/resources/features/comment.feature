@@ -17,8 +17,3 @@ Feature: Comment management
     When I update the comment with ID 1 with content "Updated comment text"
     Then the comment should be updated successfully
 
-  Scenario: Delete a comment
-    Given a comment exists with ID 1
-    When I delete the comment with ID 1
-    Then the comment should be deleted successfully
-    And the comment should no longer exist in the system

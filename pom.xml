@@ -175,6 +175,7 @@
             <version>5.5.1</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.resend</groupId>
             <artifactId>resend-java</artifactId>
@@ -200,6 +201,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.10.0.2594</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>

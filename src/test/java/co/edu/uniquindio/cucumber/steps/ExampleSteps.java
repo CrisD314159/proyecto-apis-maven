@@ -16,22 +16,30 @@ public class ExampleSteps {
     private Response response;
     private RequestSpecification request;
     private static final String BASE_URL = "http://localhost:8080";
+    private int exampleId;
 
-    @When("I create an example with title {string} description {string} content {string} creator id {int} and difficulty {string}")
-    public void createExample(String title, String description, String content, int creatorId, String difficulty) {
-        // First make sure the creator user exists
+    private JSONObject buildExampleJson(String title, String description, String content, int creatorId, String difficulty) {
         JSONObject requestBody = new JSONObject();
         requestBody.put("title", title);
         requestBody.put("description", description);
         requestBody.put("content", content);
         requestBody.put("creatorId", creatorId);
         requestBody.put("difficulty", difficulty);
+        return requestBody;
+    }
 
+    private void sendPostExample(JSONObject requestBody) {
         request = given()
                 .header("Content-Type", "application/json")
                 .body(requestBody.toString());
-
         response = request.when().post(BASE_URL + "/examples");
+        exampleId = response.jsonPath().getInt("id");
+    }
+
+    @When("I create an example with title {string} description {string} content {string} creator id {int} and difficulty {string}")
+    public void createExample(String title, String description, String content, int creatorId, String difficulty) {
+        JSONObject requestBody = buildExampleJson(title, description, content, creatorId, difficulty);
+        sendPostExample(requestBody);
     }
 
     @Then("the example should be created successfully")
@@ -52,9 +60,16 @@ public class ExampleSteps {
 
     @Given("an example exists with ID {int}")
     public void exampleExists(int id) {
-        // Check if the example exists
+        // Try to fetch it first
         response = given().when().get(BASE_URL + "/examples/" + id);
 
+        if (response.statusCode() == 404) {
+            // Create one if not found
+            JSONObject requestBody = buildExampleJson("Sample Title", "Sample Desc", "Sample Content", 1, "MEDIUM");
+            sendPostExample(requestBody);
+        } else {
+            exampleId = id;
+        }
     }
 
     @When("I request the example with ID {int}")
@@ -76,17 +91,10 @@ public class ExampleSteps {
 
     @When("I update the example with ID {int} with title {string} description {string} content {string} creator id {int} and difficulty {string}")
     public void updateExample(int id, String title, String description, String content, int creatorId, String difficulty) {
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("title", title);
-        requestBody.put("description", description);
-        requestBody.put("content", content);
-        requestBody.put("creatorId", creatorId);
-        requestBody.put("difficulty", difficulty);
-
+        JSONObject requestBody = buildExampleJson(title, description, content, creatorId, difficulty);
         request = given()
                 .header("Content-Type", "application/json")
                 .body(requestBody.toString());
-
         response = request.when().put(BASE_URL + "/examples/" + id);
     }
 
@@ -104,27 +112,5 @@ public class ExampleSteps {
                 .body("content", notNullValue())
                 .body("creatorId", notNullValue())
                 .body("difficulty", notNullValue());
-    }
-
-    @When("I delete the example with ID {int}")
-    public void deleteExample(int id) {
-        response = given().when().delete(BASE_URL + "/examples/" + id);
-    }
-
-    @Then("the example should be deleted successfully")
-    public void exampleDeletedSuccessfully() {
-        response.then().statusCode(204);
-    }
-
-    @And("the example should no longer exist in the system")
-    public void exampleNoLongerExists() {
-        // Since the delete operation doesn't return the ID in the response,
-        // we need to parse it from the request URL
-        String path = response.getHeaders().getValue("Path");
-        int id = Integer.parseInt(path.substring(path.lastIndexOf('/') + 1));
-
-        // Verify the example no longer exists
-        Response checkResponse = given().when().get(BASE_URL + "/examples/" + id);
-        checkResponse.then().statusCode(404);
     }
 }

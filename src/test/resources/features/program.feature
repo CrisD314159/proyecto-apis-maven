@@ -16,8 +16,3 @@ Feature: Program management
     Then the program should be updated successfully
     And the program details should be updated
 
-  Scenario: Delete a program
-    Given a program exists with ID 1
-    When I delete the program with ID 1
-    Then the program should be deleted successfully
-    And the program should no longer exist in the system

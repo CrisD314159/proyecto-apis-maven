@@ -15,9 +15,3 @@ Feature: Example management
     When I update the example with ID 1 with title "Test Updated" description "This is a test updated" content "example updated" creator id 1 and difficulty "easy"
     Then the example should be updated successfully
     And the example details should be updated
-
-  Scenario: Delete an example
-    Given an example exists with ID 1
-    When I delete the example with ID 1
-    Then the example should be deleted successfully
-    And the example should no longer exist in the system

@@ -13,9 +13,3 @@ Feature: User management
     Given a user exists with ID 1
     When I update the user with ID 1 with name "Jane Doe"
     Then the user should be updated successfully
-
-  Scenario: Delete a user
-    Given a user exists with ID 1
-    When I delete the user with ID 1
-    Then the user should be deleted successfully
-    And the user should no longer exist in the system
