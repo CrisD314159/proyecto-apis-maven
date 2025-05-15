@@ -24,28 +24,12 @@ pipeline {
             }
         }
 
-        stage('Ejecutar Quarkus en segundo plano') {
+
+        stage('Ejecutar Quarkus en Segundo Plano y Esperar') {
             steps {
                 script {
-                    // Ejecuta Quarkus en segundo plano
-                    sh 'nohup ./mvnw quarkus:dev -Dquarkus.http.port=8100 &'
-
-                    // Espera activa sobre un endpoint real (ajústalo si usas otro)
-                    sh '''
-                    echo "Esperando a que Quarkus esté listo en http://localhost:8100/comments/1"
-                    for i in {1..30}; do
-                        STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8100/comments/1)
-                        if [ "$STATUS" -eq 200 ] || [ "$STATUS" -eq 404 ]; then
-                            echo "Quarkus está listo."
-                            exit 0
-                        fi
-                        echo "No disponible aún, reintentando..."
-                        sleep 2
-                    done
-
-                    echo "Tiempo de espera agotado. Quarkus no respondió a tiempo."
-                    exit 1
-                    '''
+                    sh 'nohup ./mvnw quarkus:dev &'
+                    sh 'sleep 40'
                 }
             }
         }
