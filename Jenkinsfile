@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Clonar repositorio') {
             steps {
-                git 'https://github.com/usuario/tu-repo.git'
+                git 'https://github.com/CrisD314159/proyecto-apis-maven'
             }
         }
 

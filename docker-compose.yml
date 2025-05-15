@@ -70,14 +70,16 @@ services:
       - jenkins-network
 
   sonarqube:
-    image: sonarqube:latest
+    image: sonarqube:lts
     container_name: sonarqube
-    environment:
-      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
-      SONAR_JDBC_USERNAME: sonar
-      SONAR_JDBC_PASSWORD: sonar
     ports:
       - "9000:9000"
+    environment:
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/mydatabase
+    depends_on:
+      - postgres
     networks:
       - jenkins-network
 
