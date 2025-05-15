@@ -18,8 +18,10 @@ pipeline {
 
         stage('Análisis de Calidad con SonarQube') {
             steps {
-                sh 'chmod +x mvnw'
-                sh './mvnw sonar:sonar -Dsonar.projectKey=quarkus-app -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=$SONAR_TOKEN'
+                withSonarQubeEnv('SonarQube') {  // Using the exact server name as configured in Jenkins
+                    sh 'chmod +x mvnw'
+                    sh './mvnw sonar:sonar -Dsonar.projectKey=quarkus-app -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN'
+                }
             }
         }
 
