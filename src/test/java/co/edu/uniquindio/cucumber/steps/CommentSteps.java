@@ -16,7 +16,7 @@ public class CommentSteps{
 
     private Response response;
     private RequestSpecification request;
-    private static final String BASE_URL = "http://localhost:8080"; // Adjust as needed
+    private static final String BASE_URL = "http://localhost:8010"; // Adjust as needed
 
     private void createProgram() {
         createUser();

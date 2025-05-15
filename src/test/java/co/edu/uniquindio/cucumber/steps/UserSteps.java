@@ -16,7 +16,7 @@ public class UserSteps {
 
     private Response response;
     private RequestSpecification request;
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = "http://localhost:8010";
     private JsonObject defaultUser = new JsonObject()
             .put("fullName", "Default User")
             .put("email", "default" + UUID.randomUUID() + "@example.com")

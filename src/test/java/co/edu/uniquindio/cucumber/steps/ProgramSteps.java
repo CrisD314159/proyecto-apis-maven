@@ -17,7 +17,7 @@ public class ProgramSteps {
 
     private Response response;
     private RequestSpecification request;
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = "http://localhost:8010";
 
     private JSONObject buildRequestBody(String title, String description, String content, int creatorId) {
         JSONObject body = new JSONObject();
