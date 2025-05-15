@@ -24,12 +24,6 @@ pipeline {
             }
         }
 
-        stage('Compilar y probar') {
-            steps {
-                sh './mvnw clean verify'
-            }
-        }
-
         stage('Ejecutar Quarkus en segundo plano') {
             steps {
                 script {
@@ -56,11 +50,12 @@ pipeline {
             }
         }
 
-        stage('Ejecutar pruebas automatizadas') {
+        stage('Compilar y probar') {
             steps {
-                sh './mvnw test'
+                sh './mvnw verify'
             }
         }
+
 
         stage('Publicar resultados de pruebas') {
             steps {
