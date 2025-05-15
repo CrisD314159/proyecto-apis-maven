@@ -14,14 +14,30 @@ pipeline {
     stages {
         stage('Clonar repositorio') {
             steps {
-                git 'https://github.com/CrisD314159/proyecto-apis-maven'
+                git url: 'https://github.com/CrisD314159/proyecto-apis-maven', branch:'main'
+
             }
         }
+        stage('Análisis de Calidad con SonarQube') {
+            steps {
+                 sh 'chmod +x mvnw'
+                 sh './mvnw sonar:sonar -Dsonar.projectKey=quarkus-app -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=$SONAR_TOKEN'
+                 }
+            }
 
         stage('Compilar y probar') {
             steps {
+                sh 'chmod a+x mvnw'
                 sh './mvnw clean verify'
             }
+        }
+
+        stage('Ejecutar Pruebas Automatizadas') {
+             steps {
+                  dir('proyecto-cucumber') {
+                        sh 'mvn test'
+                  }
+             }
         }
 
         stage('Análisis SonarQube') {

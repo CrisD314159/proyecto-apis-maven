@@ -78,6 +78,11 @@ services:
       - SONARQUBE_JDBC_USERNAME=sonar
       - SONARQUBE_JDBC_PASSWORD=sonar
       - SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/mydatabase
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+
     depends_on:
       - postgres
     networks:
