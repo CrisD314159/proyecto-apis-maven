@@ -34,9 +34,7 @@ pipeline {
 
         stage('Ejecutar Pruebas Automatizadas') {
              steps {
-                  dir('proyecto-cucumber') {
-                        sh 'mvn test'
-                  }
+                sh 'mvn test'
              }
         }
 
