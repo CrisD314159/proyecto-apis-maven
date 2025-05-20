@@ -11,114 +11,122 @@ import co.edu.uniquindio.apis.model.enums.UserState;
 import co.edu.uniquindio.apis.repositories.user.UserRepository;
 import co.edu.uniquindio.apis.services.email.EmailSenderInteface;
 import co.edu.uniquindio.apis.services.security.JWTService;
-import co.edu.uniquindio.apis.services.security.JWTServiceImpl;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-
 public class UserServiceImpl implements UserService {
+
+    private static final Logger LOGGER = Logger.getLogger(UserServiceImpl.class);
+
     @Inject
     UserRepository userRepository;
+
     @Inject
     UserMapper userMapper;
+
     @Inject
     JWTService jwtService;
+
     @Inject
     LoginMapper loginMapper;
+
     @Inject
-    MeterRegistry meterRegistry; // Clase que almacena todas las metricas de la aplicación
+    MeterRegistry meterRegistry;
+
     @Inject
     EmailSenderInteface emailSender;
 
     @Override
     @Transactional
     public UserResponseDTO CreateUser(UserCreateDTO userCreateDTO) {
-
-        if(userExists(userCreateDTO.email())) throw new ValidationException("User already exists");
+        if (userExists(userCreateDTO.email())) {
+            throw new ValidationException("User already exists");
+        }
 
         User user = userMapper.toEntity(userCreateDTO);
         user.setCreationDate(LocalDateTime.now());
-        int code = (int) (Math.random() * 9000) + 1000;
-        user.setVerificationCode(code);
+        user.setVerificationCode(generateVerificationCode());
         user.setCodeModificationDate(LocalDateTime.now());
         user.setState(UserState.UNVERIFIED);
         user.setRole(Role.ESTUDENT);
+
         userRepository.persist(user);
-        // Adición de un contador que acumula la cantidad de veces que se crea un usuario
         meterRegistry.counter("apis.user.created").increment();
+
+        // Aquí podrías enviar correo de verificación si lo deseas
+        // emailSender.sendVerificationEmail(user.getEmail(), user.getVerificationCode());
+
         return userMapper.toResponseDTO(user);
     }
 
-
     private boolean userExists(String email) {
-        boolean exists = userRepository.find("email", email).firstResult() != null;
-        System.out.println(exists);
-        return exists;
+        return userRepository.find("email", email).firstResult() != null;
+    }
+
+    private int generateVerificationCode() {
+        return (int) (Math.random() * 9000) + 1000;
+    }
+
+    @Override
+    public List<UserResponseDTO> GetAllUsers(int offset, int limit) {
+        return userRepository.findAll()
+                .range(offset, offset + limit)
+                .stream()
+                .map(userMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponseDTO GetUserById(Long id) {
+        User user = userRepository.findById(id);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        return userMapper.toResponseDTO(user);
     }
 
     @Override
     @Transactional
-    public List<UserResponseDTO> GetAllUsers(int offset, int limit) {
-        var users = userRepository.findAll().range(offset, offset + limit);
-        return users.stream().map(userMapper::toResponseDTO).collect(Collectors.toList());
-    }
-
-
-
-    public UserResponseDTO GetUserById(Long id) {
-        User user = userRepository.findById(id);
-
+    public boolean UpdateUser(UserUpdateRequestDTO dto) {
+        User user = userRepository.findById(dto.id());
         if (user == null) {
             throw new EntityNotFoundException("User not found");
         }
 
-        return userMapper.toResponseDTO(user);
-    }
-
-    @Override
-    @Transactional
-    public boolean UpdateUser(UserUpdateRequestDTO userUpdateRequestDTO) {
-        System.out.println(userUpdateRequestDTO.id());
-        User user = userRepository.findById(userUpdateRequestDTO.id());
-        System.out.println(user.getEmail());
-
-        user.setFullName(userUpdateRequestDTO.fullName());
+        user.setFullName(dto.fullName());
         userRepository.persist(user);
 
+        meterRegistry.counter("apis.user.updated").increment();
         return true;
-
     }
 
     @Override
     @Transactional
     public boolean DeleteUser(Long id) {
         User user = userRepository.findById(id);
-
         if (user == null) {
             throw new EntityNotFoundException("User not found");
         }
 
         userRepository.delete(user);
-
+        meterRegistry.counter("apis.user.deleted").increment();
         return true;
     }
 
-
+    @Override
     public LoginResponseDTO Login(LoginRequestDTO loginRequestDTO) {
         User user = userRepository.find("email", loginRequestDTO.email()).firstResult();
-        if (user == null) throw  new EntityNotFoundException("Invalid email or password");
-        System.out.println(user.getFullName());
-        if(!BcryptUtil.matches(loginRequestDTO.password(), user.getPassword()))
-        {
-            System.out.println("Invalid password");
+
+        if (user == null || !BcryptUtil.matches(loginRequestDTO.password(), user.getPassword())) {
             throw new ValidationException("Invalid email or password");
         }
 
@@ -126,19 +134,22 @@ public class UserServiceImpl implements UserService {
         return loginMapper.toLoginResponseDTO(token, token);
     }
 
-
-    public boolean VerifyAccount(AccountVerificationRequestDTO accountVerificationRequestDTO) {
-        User user = (User) userRepository.find("email", accountVerificationRequestDTO.email());
+    @Override
+    @Transactional
+    public boolean VerifyAccount(AccountVerificationRequestDTO request) {
+        User user = userRepository.find("email", request.email()).firstResult();
 
         if (user == null) {
             throw new EntityNotFoundException("User not found");
         }
-        int verificationCode = user.getVerificationCode();
-        if(verificationCode == accountVerificationRequestDTO.verificationCode()){
+
+        if (user.getVerificationCode() == request.verificationCode()) {
             user.setVerificationCode(0);
+            user.setState(UserState.ACTIVE);
             userRepository.persist(user);
             return true;
         }
+
         throw new ValidationException("Invalid verification code");
     }
 }

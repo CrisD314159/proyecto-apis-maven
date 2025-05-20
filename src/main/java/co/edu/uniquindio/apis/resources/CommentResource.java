@@ -1,6 +1,7 @@
 package co.edu.uniquindio.apis.resources;
 
 import co.edu.uniquindio.apis.dtos.CommentCreateDTO;
+import co.edu.uniquindio.apis.dtos.CommentDTO;
 import co.edu.uniquindio.apis.dtos.CommentResponseDTO;
 import co.edu.uniquindio.apis.dtos.CommentUpdateDTO;
 import co.edu.uniquindio.apis.exceptions.UnexpectedErrorException;
@@ -41,7 +42,7 @@ public class CommentResource {
     @PermitAll
     public Response createComment(CommentCreateDTO comment) {
         try{
-            commentService.CreateComment(comment);
+            commentService.createComment(comment);
             LOG.info("Comment created");
             return Response.status(Response.Status.CREATED).entity(comment).build();
         }catch (Exception e){
@@ -54,7 +55,7 @@ public class CommentResource {
     @PermitAll
     public Response getCommentById(@PathParam("id") Long id) {
         try{
-            CommentResponseDTO response = commentService.GetComment(id);
+            CommentDTO response = commentService.getComment(id);
             return  Response.ok(response).build();
         }catch (Exception e){
             throw new UnexpectedErrorException(e.getMessage());
@@ -66,7 +67,7 @@ public class CommentResource {
     public Response updateComment(CommentUpdateDTO comment) {
         try{
 
-            commentService.UpdateComment(comment);
+            commentService.updateComment(comment);
             LOG.info("Comment updated");
             return Response.status(Response.Status.OK).build();
         }catch (Exception e){
@@ -79,7 +80,7 @@ public class CommentResource {
     @PermitAll
     public Response deleteComment(@PathParam("id") Long id) {
         try {
-            commentService.DeleteComment(id);
+            commentService.deleteComment(id);
             LOG.info("Comment deleted");
             return Response.status(Response.Status.OK).build();
         }catch (Exception e){
@@ -92,7 +93,7 @@ public class CommentResource {
     @PermitAll
     public Response resolveComment(@PathParam("id") Long id) {
         try {
-            commentService.ResolveComment(id);
+            commentService.resolveComment(id);
             LOG.info("Comment resolved");
             return Response.ok(Response.Status.OK).build();
         }catch (Exception e){
