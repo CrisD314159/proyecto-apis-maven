@@ -15,7 +15,7 @@ public class ExampleSteps {
 
     private Response response;
     private RequestSpecification request;
-    private static final String BASE_URL = "http://localhost:8100";
+    private static final String BASE_URL = "http://localhost:8080";
     private int exampleId;
 
     private JSONObject buildExampleJson(String title, String description, String content, int creatorId, String difficulty) {
